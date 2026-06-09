@@ -1,27 +1,24 @@
-function DashboardLayout({
- children
-}) {
- return (
-  <div className="flex h-screen">
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
-   <div className="w-64 bg-slate-900">
-      Sidebar
-   </div>
+function DashboardLayout({ children }) {
+  return (
+    <div className="flex min-h-screen bg-slate-950 text-white">
 
-   <div className="flex-1">
+      <Sidebar />
 
-      <div className="h-16 border-b">
-         Navbar
+      <div className="flex-1">
+
+        <Navbar />
+
+        <main className="p-6">
+          {children}
+        </main>
+
       </div>
 
-      <div className="p-6">
-         {children}
-      </div>
-
-   </div>
-
-  </div>
- );
+    </div>
+  );
 }
 
 export default DashboardLayout;

@@ -8,6 +8,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CitizenDashboard from "./pages/CitizenDashboard";
 import ResponderDashboard from "./pages/ResponderDashboard";
 import PrivateRoute from "./routes/PrivateRoute";
+import RoleProtectedRoute from "./routes/RoleProtectedRoute";
 
 function App() {
   return (
