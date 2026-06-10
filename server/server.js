@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-
+const emergencyRoutes =require("./routes/emergencyRoutes");
 dotenv.config();
 
 connectDB();
@@ -18,6 +18,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use(
+ "/api/emergencies",
+ emergencyRoutes
+);
 
 app.get("/", (req, res) => {
   res.send("ResQNet API Running");

@@ -30,19 +30,19 @@ function App() {
         />
 
         <Route
-          path="/admin"
+          path="/citizen"
           element={
             <RoleProtectedRoute allowedRole="citizen">
-              <AdminDashboard />
+              <CitizenDashboard />
             </RoleProtectedRoute>
           }
         />
 
         <Route
-          path="/admin"
+          path="/responder"
           element={
             <RoleProtectedRoute allowedRole="responder">
-              <AdminDashboard />
+              <ResponderDashboard />
             </RoleProtectedRoute>
           }
         />

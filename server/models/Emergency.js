@@ -10,13 +10,7 @@ const emergencySchema = new mongoose.Schema(
 
     emergencyType: {
       type: String,
-      enum: [
-        "flood",
-        "fire",
-        "medical",
-        "accident",
-        "general",
-      ],
+      enum: ["flood", "fire", "medical", "accident", "general"],
       required: true,
     },
 
@@ -37,15 +31,18 @@ const emergencySchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: [
-        "pending",
-        "assigned",
-        "in_progress",
-        "completed",
-      ],
+      enum: ["pending", "assigned", "in_progress", "completed"],
       default: "pending",
     },
+    affectedPeople: {
+      type: Number,
+      default: 1,
+    },
 
+    severity: {
+      type: Number,
+      default: 1,
+    },
     priorityScore: {
       type: Number,
       default: 0,
@@ -53,12 +50,7 @@ const emergencySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports =
-  mongoose.model(
-    "Emergency",
-    emergencySchema
-  );
-  
+module.exports = mongoose.model("Emergency", emergencySchema);
