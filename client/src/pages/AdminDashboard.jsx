@@ -8,6 +8,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import StatCard from "../components/StatCard";
 
 import { getEmergencies } from "../services/emergencyService";
+import EmergencyMap from "../components/EmergencyMap";
 
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
@@ -43,8 +44,14 @@ function AdminDashboard() {
         <StatCard title="Flood Zones" value="3" />
       </div>
 
-      <div className="bg-slate-900 rounded-lg h-[500px] mt-8 flex items-center justify-center">
-        LIVE MAP AREA
+      <div
+        className="
+  bg-slate-900
+  rounded-lg
+  mt-8
+  overflow-hidden"
+      >
+        <EmergencyMap emergencies={emergencies} />
       </div>
       <div className="mt-8">
         <h2

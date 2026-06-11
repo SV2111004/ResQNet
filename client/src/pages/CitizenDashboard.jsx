@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -14,6 +14,10 @@ function CitizenDashboard() {
   const [severity, setSeverity] = useState(1);
 
   const [affectedPeople, setAffectedPeople] = useState(1);
+
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
+
   const { user } = useSelector((state) => state.auth);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,8 +28,8 @@ function CitizenDashboard() {
           emergencyType,
           description,
 
-          lat: 26.1445,
-          lng: 91.7362,
+          lat,
+          lng,
 
           severity,
           affectedPeople,
@@ -39,7 +43,17 @@ function CitizenDashboard() {
       console.log(error);
     }
   };
-  console.log("USER:", user);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLat(position.coords.latitude);
+        setLng(position.coords.longitude);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+  }, []);
   return (
     <DashboardLayout>
       <h1
@@ -57,6 +71,9 @@ function CitizenDashboard() {
       p-6
       rounded-lg"
       >
+        <p className="mb-4 text-green-400">
+          {lat ? "Location captured" : "Fetching location..."}
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <select
             value={emergencyType}

@@ -26,7 +26,7 @@ const emergencySchema = new mongoose.Schema(
 
     city: {
       type: String,
-      default: "Guwahati",
+      default: "Unknown",
     },
 
     status: {
