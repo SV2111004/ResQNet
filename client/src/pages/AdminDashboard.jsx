@@ -10,16 +10,24 @@ import StatCard from "../components/StatCard";
 import { getEmergencies } from "../services/emergencyService";
 import EmergencyMap from "../components/EmergencyMap";
 
+import { getResponders } from "../services/userService";
+import { createMission } from "../services/missionService";
+
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
 
   const { user } = useSelector((state) => state.auth);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getEmergencies(user.token);
 
         setEmergencies(data);
+
+        const responderData = await getResponders(user.token);
+
+        setResponders(responderData);
       } catch (error) {
         console.log(error);
       }
@@ -27,6 +35,28 @@ function AdminDashboard() {
 
     fetchData();
   }, [user]);
+
+  const [responders, setResponders] = useState([]);
+  const assignMission = async (emergencyId) => {
+    try {
+      if (responders.length === 0) {
+        return;
+      }
+
+      await createMission(
+        {
+          emergencyId,
+          responderId: responders[0]._id,
+        },
+
+        user.token,
+      );
+
+      alert("Mission Assigned");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -86,8 +116,20 @@ function AdminDashboard() {
               Status:
               {emergency.status}
             </p>
+            <button
+              onClick={() => assignMission(emergency._id)}
+              className="
+ mt-3
+ bg-green-600
+ px-4
+ py-2
+ rounded"
+            >
+              Assign Responder
+            </button>
           </div>
         ))}
+        <button>Assign</button>
       </div>
     </DashboardLayout>
   );
