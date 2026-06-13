@@ -60,7 +60,9 @@ function AdminDashboard() {
 
         user.token,
       );
+      const updatedEmergencies = await getEmergencies(user.token);
 
+      setEmergencies(updatedEmergencies);
       alert("Mission Assigned");
     } catch (error) {
       console.log(error);
@@ -75,34 +77,21 @@ function AdminDashboard() {
   });
 
   useEffect(() => {
-
-  socket.on(
-    "newEmergency",
-    (newEmergency) => {
-
-      setEmergencies(
-        (prev) => [
-          newEmergency,
-          ...prev,
-        ]
-      );
+    socket.on("newEmergency", (newEmergency) => {
+      setEmergencies((prev) => [newEmergency, ...prev]);
 
       setStats((prev) => ({
         ...prev,
-        active:
-          prev.active + 1,
+        active: prev.active + 1,
 
-        pending:
-          prev.pending + 1,
+        pending: prev.pending + 1,
       }));
-    }
-  );
+    });
 
-  return () => {
-    socket.off("newEmergency");
-  };
-
-}, []);
+    return () => {
+      socket.off("newEmergency");
+    };
+  }, []);
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">
@@ -161,20 +150,38 @@ function AdminDashboard() {
               Status:
               {emergency.status}
             </p>
-            <button
-              onClick={() => assignMission(emergency._id)}
-              className="
- mt-3
- bg-green-600
- px-4
- py-2
- rounded"
-            >
-              Assign Responder
-            </button>
+            <p>
+              Severity:
+              {emergency.severity}
+            </p>
+
+            <p>
+              Affected People:
+              {emergency.affectedPeople}
+            </p>
+            {emergency.assignedResponder ? (
+              <div
+                className="
+    mt-3
+    text-green-400"
+              >
+                Assigned
+              </div>
+            ) : (
+              <button
+                onClick={() => assignMission(emergency._id)}
+                className="
+    mt-3
+    bg-green-600
+    px-4
+    py-2
+    rounded"
+              >
+                Assign Responder
+              </button>
+            )}
           </div>
         ))}
-        
       </div>
     </DashboardLayout>
   );

@@ -10,19 +10,18 @@ const createMission = async (req, res) => {
 
       responder: responderId,
     });
-    const populatedMission =
-await Mission.findById(
-  mission._id
-)
-.populate("emergency");
+    await Emergency.findByIdAndUpdate(emergencyId, {
+      assignedResponder: responderId,
 
-const io =
-req.app.get("io");
+      status: "assigned",
+    });
+    const populatedMission = await Mission.findById(mission._id).populate(
+      "emergency",
+    );
 
-io.emit(
-  "newMission",
-  populatedMission
-);
+    const io = req.app.get("io");
+
+    io.emit("newMission", populatedMission);
 
     res.status(201).json(mission);
   } catch (error) {
@@ -57,6 +56,7 @@ const acceptMission = async (req, res) => {
     }
 
     mission.status = "accepted";
+    await mission.save();
     const emergency = await Emergency.findById(mission.emergency);
 
     emergency.status = "in_progress";
@@ -71,47 +71,31 @@ const acceptMission = async (req, res) => {
   }
 };
 
-const completeMission = async (
-  req,
-  res
-) => {
+const completeMission = async (req, res) => {
   try {
-
-    const mission =
-      await Mission.findById(
-        req.params.id
-      );
+    const mission = await Mission.findById(req.params.id);
 
     if (!mission) {
       return res.status(404).json({
-        message:
-          "Mission not found",
+        message: "Mission not found",
       });
     }
 
-    mission.status =
-      "completed";
+    mission.status = "completed";
 
     await mission.save();
 
-    const emergency =
-      await Emergency.findById(
-        mission.emergency
-      );
+    const emergency = await Emergency.findById(mission.emergency);
 
-    emergency.status =
-      "completed";
+    emergency.status = "completed";
 
     await emergency.save();
 
     res.json(mission);
-
   } catch (error) {
-
     res.status(500).json({
       message: error.message,
     });
-
   }
 };
 
