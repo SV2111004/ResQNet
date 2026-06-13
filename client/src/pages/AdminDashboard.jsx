@@ -7,11 +7,14 @@ import DashboardLayout from "../layouts/DashboardLayout";
 
 import StatCard from "../components/StatCard";
 
-import { getEmergencies } from "../services/emergencyService";
 import EmergencyMap from "../components/EmergencyMap";
 
 import { getResponders } from "../services/userService";
 import { createMission } from "../services/missionService";
+import {
+  getEmergencies,
+  getEmergencyStats,
+} from "../services/emergencyService";
 
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
@@ -26,6 +29,9 @@ function AdminDashboard() {
         setEmergencies(data);
 
         const responderData = await getResponders(user.token);
+        const statsData = await getEmergencyStats(user.token);
+
+        setStats(statsData);
 
         setResponders(responderData);
       } catch (error) {
@@ -37,6 +43,7 @@ function AdminDashboard() {
   }, [user]);
 
   const [responders, setResponders] = useState([]);
+
   const assignMission = async (emergencyId) => {
     try {
       if (responders.length === 0) {
@@ -58,20 +65,27 @@ function AdminDashboard() {
     }
   };
 
+  const [stats, setStats] = useState({
+    active: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+  });
+
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">
-        Guwahati Emergency Operations Center
+        ResQNet Emergency Operations Center
       </h1>
 
       <div className="grid grid-cols-4 gap-4">
-        <StatCard title="Active Emergencies" value={emergencies.length} />
+        <StatCard title="Active Emergencies" value={stats.active} />
 
-        <StatCard title="Responders Online" value="12" />
+        <StatCard title="Pending" value={stats.pending} />
 
-        <StatCard title="Active Shelters" value="6" />
+        <StatCard title="In Progress" value={stats.inProgress} />
 
-        <StatCard title="Flood Zones" value="3" />
+        <StatCard title="Completed" value={stats.completed} />
       </div>
 
       <div
@@ -129,7 +143,7 @@ function AdminDashboard() {
             </button>
           </div>
         ))}
-        <button>Assign</button>
+        
       </div>
     </DashboardLayout>
   );

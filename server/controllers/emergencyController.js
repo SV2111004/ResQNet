@@ -23,8 +23,6 @@ const createEmergency = async (req, res) => {
       priorityScore,
     });
 
- 
-
     res.status(201).json(emergency);
   } catch (error) {
     res.status(500).json({
@@ -32,21 +30,54 @@ const createEmergency = async (req, res) => {
     });
   }
 };
-   const getEmergencies = async (req, res) => {
-      try {
-        const emergencies = await Emergency.find().sort({
-          priorityScore: -1,
-        });
+const getEmergencies = async (req, res) => {
+  try {
+    const emergencies = await Emergency.find().sort({
+      priorityScore: -1,
+    });
 
-        res.json(emergencies);
-      } catch (error) {
-        res.status(500).json({
-          message: error.message,
-        });
-      }
-    };
+    res.json(emergencies);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+const getEmergencyStats = async (req, res) => {
+  try {
+    const active = await Emergency.countDocuments({
+      status: {
+        $in: ["pending", "assigned", "in_progress"],
+      },
+    });
+
+    const pending = await Emergency.countDocuments({
+      status: "pending",
+    });
+
+    const inProgress = await Emergency.countDocuments({
+      status: "in_progress",
+    });
+
+    const completed = await Emergency.countDocuments({
+      status: "completed",
+    });
+
+    res.json({
+      active,
+      pending,
+      inProgress,
+      completed,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createEmergency,
   getEmergencies,
+  getEmergencyStats,
 };

@@ -21,6 +21,7 @@ export const getEmergencies = async (
 
   return response.data;
 };
+
 export const createEmergency = async (
   emergencyData,
   token
@@ -30,6 +31,23 @@ export const createEmergency = async (
     await API.post(
       "/emergencies",
       emergencyData,
+      {
+        headers: {
+          Authorization:
+          `Bearer ${token}`,
+        },
+      }
+    );
+
+  return response.data;
+};
+
+export const getEmergencyStats =
+async (token) => {
+
+  const response =
+    await API.get(
+      "/emergencies/stats",
       {
         headers: {
           Authorization:

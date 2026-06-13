@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createEmergency,
   getEmergencies,
+  getEmergencyStats,
 } = require(
   "../controllers/emergencyController"
 );
@@ -28,4 +29,10 @@ router.get(
   getEmergencies
 );
 
+router.get(
+  "/stats",
+  protect,
+  authorize("admin"),
+  getEmergencyStats
+);
 module.exports = router;
