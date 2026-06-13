@@ -10,6 +10,19 @@ const createMission = async (req, res) => {
 
       responder: responderId,
     });
+    const populatedMission =
+await Mission.findById(
+  mission._id
+)
+.populate("emergency");
+
+const io =
+req.app.get("io");
+
+io.emit(
+  "newMission",
+  populatedMission
+);
 
     res.status(201).json(mission);
   } catch (error) {

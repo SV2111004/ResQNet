@@ -23,6 +23,9 @@ const createEmergency = async (req, res) => {
       priorityScore,
     });
 
+    const io = req.app.get("io");
+    io.emit("newEmergency", emergency);
+
     res.status(201).json(emergency);
   } catch (error) {
     res.status(500).json({

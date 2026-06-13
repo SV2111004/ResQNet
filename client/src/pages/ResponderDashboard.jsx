@@ -10,6 +10,8 @@ import { acceptMission } from "../services/missionService";
 
 import { completeMission } from "../services/missionService";
 
+import socket from "../socket";
+
 function ResponderDashboard() {
   const [missions, setMissions] = useState([]);
 
@@ -50,6 +52,17 @@ function ResponderDashboard() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    socket.on("newMission", (mission) => {
+      alert("New Mission Assigned!");
+      setMissions((prev) => [mission, ...prev]);
+    });
+
+    return () => {
+      socket.off("newMission");
+    };
+  }, []);
 
   return (
     <DashboardLayout>

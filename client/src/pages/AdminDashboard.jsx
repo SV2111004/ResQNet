@@ -16,6 +16,8 @@ import {
   getEmergencyStats,
 } from "../services/emergencyService";
 
+import socket from "../socket";
+
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
 
@@ -72,6 +74,35 @@ function AdminDashboard() {
     completed: 0,
   });
 
+  useEffect(() => {
+
+  socket.on(
+    "newEmergency",
+    (newEmergency) => {
+
+      setEmergencies(
+        (prev) => [
+          newEmergency,
+          ...prev,
+        ]
+      );
+
+      setStats((prev) => ({
+        ...prev,
+        active:
+          prev.active + 1,
+
+        pending:
+          prev.pending + 1,
+      }));
+    }
+  );
+
+  return () => {
+    socket.off("newEmergency");
+  };
+
+}, []);
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">
