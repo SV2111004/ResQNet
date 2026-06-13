@@ -8,6 +8,8 @@ import { getMyMissions } from "../services/missionService";
 
 import { acceptMission } from "../services/missionService";
 
+import { completeMission } from "../services/missionService";
+
 function ResponderDashboard() {
   const [missions, setMissions] = useState([]);
 
@@ -32,6 +34,18 @@ function ResponderDashboard() {
       await acceptMission(missionId, user.token);
 
       alert("Mission Accepted");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleComplete = async (missionId) => {
+    try {
+      await completeMission(missionId, user.token);
+
+      alert("Mission Completed");
+
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -90,17 +104,44 @@ function ResponderDashboard() {
 
             <p>Description: {mission.emergency?.description}</p>
 
-            <button
-              onClick={() => handleAccept(mission._id)}
-              className="
-  mt-4
-  bg-green-600
-  px-4
-  py-2
-  rounded"
-            >
-              Accept Mission
-            </button>
+            {mission.status === "assigned" && (
+              <button
+                onClick={() => handleAccept(mission._id)}
+                className="
+      mt-4
+      bg-green-600
+      px-4
+      py-2
+      rounded"
+              >
+                Accept Mission
+              </button>
+            )}
+
+            {mission.status === "accepted" && (
+              <button
+                onClick={() => handleComplete(mission._id)}
+                className="
+      mt-4
+      bg-blue-600
+      px-4
+      py-2
+      rounded"
+              >
+                Complete Mission
+              </button>
+            )}
+
+            {mission.status === "completed" && (
+              <div
+                className="
+      mt-4
+      text-green-400
+      font-semibold"
+              >
+                Mission Completed
+              </div>
+            )}
           </div>
         ))
       )}

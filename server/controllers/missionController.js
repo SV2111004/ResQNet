@@ -1,4 +1,5 @@
 const Mission = require("../models/Mission");
+const Emergency = require("../models/Emergency");
 
 const createMission = async (req, res) => {
   try {
@@ -32,7 +33,32 @@ const getMyMissions = async (req, res) => {
   }
 };
 
-const acceptMission = async (
+const acceptMission = async (req, res) => {
+  try {
+    const mission = await Mission.findById(req.params.id);
+
+    if (!mission) {
+      return res.status(404).json({
+        message: "Mission not found",
+      });
+    }
+
+    mission.status = "accepted";
+    const emergency = await Emergency.findById(mission.emergency);
+
+    emergency.status = "in_progress";
+
+    await emergency.save();
+
+    res.json(mission);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const completeMission = async (
   req,
   res
 ) => {
@@ -51,9 +77,19 @@ const acceptMission = async (
     }
 
     mission.status =
-      "accepted";
+      "completed";
 
     await mission.save();
+
+    const emergency =
+      await Emergency.findById(
+        mission.emergency
+      );
+
+    emergency.status =
+      "completed";
+
+    await emergency.save();
 
     res.json(mission);
 
@@ -70,4 +106,5 @@ module.exports = {
   createMission,
   getMyMissions,
   acceptMission,
+  completeMission,
 };

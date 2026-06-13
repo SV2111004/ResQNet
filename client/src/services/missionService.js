@@ -51,3 +51,24 @@ async (
 
   return response.data;
 };
+
+export const completeMission =
+async (
+  missionId,
+  token
+) => {
+
+  const response =
+    await API.put(
+      `/missions/${missionId}/complete`,
+      {},
+      {
+        headers: {
+          Authorization:
+          `Bearer ${token}`,
+        },
+      }
+    );
+
+  return response.data;
+};
