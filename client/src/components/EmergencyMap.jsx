@@ -3,16 +3,14 @@ import {
   TileLayer,
   Marker,
   Popup,
+  Polyline,
 } from "react-leaflet";
 
-function EmergencyMap({ emergencies }) {
+function EmergencyMap({ emergencies, routeCoordinates }) {
   const center =
-  emergencies.length > 0
-    ? [
-        emergencies[0].location.lat,
-        emergencies[0].location.lng,
-      ]
-    : [28.6139, 77.2090];
+    emergencies.length > 0
+      ? [emergencies[0].location.lat, emergencies[0].location.lng]
+      : [28.6139, 77.209];
   return (
     <MapContainer
       center={center}
@@ -23,23 +21,18 @@ function EmergencyMap({ emergencies }) {
       }}
     >
       <TileLayer
-        attribution='&copy; OpenStreetMap'
+        attribution="&copy; OpenStreetMap"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
       {emergencies.map((emergency) => (
         <Marker
           key={emergency._id}
-          position={[
-            emergency.location.lat,
-            emergency.location.lng,
-          ]}
+          position={[emergency.location.lat, emergency.location.lng]}
         >
           <Popup>
             <div>
-              <h3>
-                {emergency.emergencyType}
-              </h3>
+              <h3>{emergency.emergencyType}</h3>
 
               <p>
                 Priority:
@@ -54,6 +47,15 @@ function EmergencyMap({ emergencies }) {
           </Popup>
         </Marker>
       ))}
+      {routeCoordinates && routeCoordinates.length > 0 && (
+        <Polyline
+          positions={routeCoordinates}
+          pathOptions={{
+            color: "blue",
+            weight: 6,
+          }}
+        />
+      )}
     </MapContainer>
   );
 }

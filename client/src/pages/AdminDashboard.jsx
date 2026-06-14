@@ -18,6 +18,9 @@ import {
 
 import socket from "../socket";
 
+import demoLocations from "../data/demoLocations";
+import { optimizeRoute } from "../services/routeService";
+
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
 
@@ -92,6 +95,33 @@ function AdminDashboard() {
       socket.off("newEmergency");
     };
   }, []);
+
+  const [startNode, setStartNode] = useState("sector18");
+
+  const [endNode, setEndNode] = useState("parichowk");
+
+  const [routeResult, setRouteResult] = useState(null);
+
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+
+  const handleRouteOptimization = async () => {
+    try {
+      const result = await optimizeRoute(startNode, endNode);
+
+      setRouteResult(result);
+
+      const coordinates = result.path.map((locationName) => {
+        const location = demoLocations.find((loc) => loc.name === locationName);
+
+        return [location.lat, location.lng];
+      });
+
+      setRouteCoordinates(coordinates);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">
@@ -115,7 +145,10 @@ function AdminDashboard() {
   mt-8
   overflow-hidden"
       >
-        <EmergencyMap emergencies={emergencies} />
+        <EmergencyMap
+          emergencies={emergencies}
+          routeCoordinates={routeCoordinates}
+        />
       </div>
       <div className="mt-8">
         <h2
@@ -182,6 +215,67 @@ function AdminDashboard() {
             )}
           </div>
         ))}
+      </div>
+      <div className="bg-slate-900 p-6 rounded-lg mt-8">
+        <h2 className="text-xl font-bold mb-4">Route Optimization</h2>
+
+        <div className="flex gap-4">
+          <select
+            value={startNode}
+            onChange={(e) => setStartNode(e.target.value)}
+          >
+            {demoLocations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.name}
+              </option>
+            ))}
+          </select>
+
+          <select value={endNode} onChange={(e) => setEndNode(e.target.value)}>
+            {demoLocations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.name}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={handleRouteOptimization}
+            className="
+      bg-blue-600
+      px-4
+      py-2
+      rounded"
+          >
+            Calculate Route
+          </button>
+        </div>
+
+        {routeResult && (
+          <div className="mt-6">
+            <p>
+              Distance: {routeResult.distance}
+              km
+            </p>
+
+            <p>
+              ETA: {routeResult.eta}
+              min
+            </p>
+
+            <div className="mt-4">
+              <h3 className="font-bold">Optimal Route</h3>
+
+              {routeResult.path.map((location, index) => (
+                <div key={index}>
+                  <p>{location}</p>
+
+                  {index < routeResult.path.length - 1 && <p>↓</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
