@@ -14,22 +14,14 @@ const missionSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: [
-        "assigned",
-        "accepted",
-        "completed",
-      ],
+      enum: ["assigned", "accepted", "completed"],
       default: "assigned",
     },
+   
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports =
-  mongoose.model(
-    "Mission",
-    missionSchema
-  );
-  
+module.exports = mongoose.model("Mission", missionSchema);
