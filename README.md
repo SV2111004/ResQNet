@@ -1,6 +1,6 @@
 # ResQNet
 
-Realtime disaster response and emergency coordination platform.
+Realtime disaster response and emergency coordination platform
 
 ## Features
 
