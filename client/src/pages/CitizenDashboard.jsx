@@ -75,41 +75,98 @@ function CitizenDashboard() {
           {lat ? "Location captured" : "Fetching location..."}
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <select
-            value={emergencyType}
-            onChange={(e) => setEmergencyType(e.target.value)}
+          <div className="flex flex-col gap-2">
+            <label>Emergency Type</label>
+
+            <select
+              value={emergencyType}
+              onChange={(e) => setEmergencyType(e.target.value)}
+              className="
+      bg-slate-800
+      p-3
+      rounded
+      border
+      border-slate-700"
+            >
+              <option value="flood">Flood</option>
+              <option value="earthquake">Earthquake</option>
+              <option value="landslide">Landslide</option>
+              <option value="cyclone">Cyclone</option>
+              <option value="wildfire">Wildfire</option>
+              <option value="medical">Medical</option>
+              <option value="accident">Accident</option>
+              <option value="fire">Fire</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label>Description</label>
+
+            <textarea
+              required
+              rows="3"
+              placeholder="Describe the emergency situation"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="
+      bg-slate-800
+      p-3
+      rounded
+      border
+      border-slate-700"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label>Severity (1-5)</label>
+
+            <select
+              value={severity}
+              onChange={(e) => setSeverity(Number(e.target.value))}
+              className="
+      bg-slate-800
+      p-3
+      rounded
+      border
+      border-slate-700"
+            >
+              <option value={1}>1 - Low</option>
+              <option value={2}>2 - Moderate</option>
+              <option value={3}>3 - High</option>
+              <option value={4}>4 - Critical</option>
+              <option value={5}>5 - Extreme</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label>Estimated People Affected</label>
+
+            <input
+              type="number"
+              min="1"
+              value={affectedPeople}
+              onChange={(e) => setAffectedPeople(Number(e.target.value))}
+              className="
+      bg-slate-800
+      p-3
+      rounded
+      border
+      border-slate-700"
+            />
+          </div>
+          <button
+            type="submit"
+            className="
+    bg-red-600
+    hover:bg-red-700
+    px-6
+    py-3
+    rounded
+    font-semibold"
           >
-            <option value="flood">Flood</option>
-
-            <option value="fire">Fire</option>
-
-            <option value="medical">Medical</option>
-
-            <option value="accident">Accident</option>
-          </select>
-
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-
-          <input
-            type="number"
-            placeholder="Severity"
-            value={severity}
-            onChange={(e) => setSeverity(Number(e.target.value))}
-          />
-
-          <input
-            type="number"
-            placeholder="Affected People"
-            value={affectedPeople}
-            onChange={(e) => setAffectedPeople(Number(e.target.value))}
-          />
-
-          <button type="submit">Create SOS</button>
+            Create SOS
+          </button>
+          <button type="submit"></button>
         </form>
       </div>
     </DashboardLayout>

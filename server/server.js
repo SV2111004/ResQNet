@@ -12,6 +12,8 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const emergencyRoutes = require("./routes/emergencyRoutes");
 const missionRoutes = require("./routes/missionRoutes");
 const routeRoutes = require("./routes/routeRoutes");
+const shelterRoutes = require("./routes/shelterRoutes");
+
 dotenv.config();
 
 connectDB();
@@ -37,7 +39,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/emergencies", emergencyRoutes);
 app.use("/api/missions", missionRoutes);
 app.use("/api/routes", routeRoutes);
-
+app.use("/api/shelters", shelterRoutes);
 app.get("/", (req, res) => {
   res.send("ResQNet API Running");
 });

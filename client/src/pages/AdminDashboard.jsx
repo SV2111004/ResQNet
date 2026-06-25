@@ -21,6 +21,8 @@ import socket from "../socket";
 import demoLocations from "../data/demoLocations";
 import { optimizeRoute } from "../services/routeService";
 
+import { recommendShelter } from "../services/shelterService";
+
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
 
@@ -121,6 +123,41 @@ function AdminDashboard() {
       console.log(error);
     }
   };
+  const [recommendedShelters, setRecommendedShelters] = useState({});
+  const handleShelterRecommendation = async (emergency) => {
+    try {
+      console.log("Emergency:", emergency);
+      const shelter = await recommendShelter(
+        emergency.location.lat,
+        emergency.location.lng,
+      );
+      console.log("Shelter:", shelter);
+
+      setRecommendedShelters((prev) => ({
+        ...prev,
+        [emergency._id]: shelter,
+      }));
+      setSelectedEmergency(emergency);
+
+      setSelectedShelter(shelter);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [selectedEmergency, setSelectedEmergency] = useState(null);
+
+  const [selectedShelter, setSelectedShelter] = useState(null);
+
+  const [shelterRoute, setShelterRoute] = useState([]);
+
+  const shelterRequiredEmergencies = [
+    "flood",
+    "earthquake",
+    "landslide",
+    "cyclone",
+    "wildfire",
+  ];
 
   return (
     <DashboardLayout>
@@ -148,6 +185,8 @@ function AdminDashboard() {
         <EmergencyMap
           emergencies={emergencies}
           routeCoordinates={routeCoordinates}
+          selectedEmergency={selectedEmergency}
+          selectedShelter={selectedShelter}
         />
       </div>
       <div className="mt-8">
@@ -189,7 +228,7 @@ function AdminDashboard() {
             </p>
 
             <p>
-              Affected People:
+              Estimated People Affected:
               {emergency.affectedPeople}
             </p>
             {emergency.assignedResponder ? (
@@ -212,6 +251,50 @@ function AdminDashboard() {
               >
                 Assign Responder
               </button>
+            )}
+            {shelterRequiredEmergencies.includes(emergency.emergencyType) && (
+              <button
+                onClick={() => handleShelterRecommendation(emergency)}
+                className="
+      mt-3
+      ml-3
+      bg-blue-600
+      px-4
+      py-2
+      rounded"
+              >
+                Find Shelter
+              </button>
+            )}
+            {recommendedShelters[emergency._id] && (
+              <div className="mt-4 p-4 bg-slate-800 rounded">
+                <h3 className="font-bold text-blue-400">Recommended Shelter</h3>
+
+                <p>Name: {recommendedShelters[emergency._id].name}</p>
+
+                <p>
+                  Distance: {recommendedShelters[emergency._id].distance} km
+                </p>
+
+                <p>
+                  Available Beds:{" "}
+                  {recommendedShelters[emergency._id].availableBeds}
+                </p>
+
+                <p>
+                  Food Available:{" "}
+                  {recommendedShelters[emergency._id].foodAvailable
+                    ? "Yes"
+                    : "No"}
+                </p>
+
+                <p>
+                  Water Available:{" "}
+                  {recommendedShelters[emergency._id].waterAvailable
+                    ? "Yes"
+                    : "No"}
+                </p>
+              </div>
             )}
           </div>
         ))}

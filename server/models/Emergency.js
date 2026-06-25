@@ -10,7 +10,16 @@ const emergencySchema = new mongoose.Schema(
 
     emergencyType: {
       type: String,
-      enum: ["flood", "fire", "medical", "accident", "general"],
+      enum: [
+        "flood",
+        "earthquake",
+        "landslide",
+        "cyclone",
+        "wildfire",
+        "medical",
+        "accident",
+        "fire",
+      ],
       required: true,
     },
 

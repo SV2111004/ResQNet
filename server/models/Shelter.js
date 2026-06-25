@@ -28,16 +28,17 @@ const shelterSchema = new mongoose.Schema(
 
     city: {
       type: String,
-      default: "Guwahati",
+      default: "Delhi NCR",
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports =
-  mongoose.model(
-    "Shelter",
-    shelterSchema
-  );
+module.exports = mongoose.model("Shelter", shelterSchema);

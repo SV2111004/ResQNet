@@ -28,6 +28,8 @@ const createEmergency = async (req, res) => {
 
     res.status(201).json(emergency);
   } catch (error) {
+    console.log("CREATE EMERGENCY ERROR:");
+  console.log(error);
     res.status(500).json({
       message: error.message,
     });
