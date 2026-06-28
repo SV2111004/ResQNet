@@ -5,35 +5,69 @@ const User = require("../models/User");
 
 require("dotenv").config();
 
-const createResponder = async () => {
+const createResponders = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-  await mongoose.connect(
-    process.env.MONGO_URI
-  );
-
-  const hashedPassword =
-    await bcrypt.hash(
+    const hashedPassword = await bcrypt.hash(
       "responder123",
       10
     );
 
-  await User.create({
-    name: "Responder One",
+    await User.deleteMany({
+      role: "responder",
+    });
 
-    email:
-      "responder@resqnet.com",
+    await User.insertMany([
+      {
+        name: "Responder One",
+        email: "responder1@resqnet.com",
+        password: hashedPassword,
+        role: "responder",
 
-    password:
-      hashedPassword,
+        isAvailable: true,
 
-    role: "responder",
-  });
+        location: {
+          lat: 28.6289,
+          lng: 77.3649,
+        },
+      },
 
-  console.log(
-    "Responder Created"
-  );
+      {
+        name: "Responder Two",
+        email: "responder2@resqnet.com",
+        password: hashedPassword,
+        role: "responder",
 
-  process.exit();
+        isAvailable: true,
+
+        location: {
+          lat: 28.5706,
+          lng: 77.3272,
+        },
+      },
+
+      {
+        name: "Responder Three",
+        email: "responder3@resqnet.com",
+        password: hashedPassword,
+        role: "responder",
+
+        isAvailable: true,
+
+        location: {
+          lat: 28.4677,
+          lng: 77.5030,
+        },
+      },
+    ]);
+
+    console.log("3 Responders Created");
+
+    process.exit();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-createResponder();
+createResponders();

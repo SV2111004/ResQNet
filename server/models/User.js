@@ -32,10 +32,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    location: {
+      lat: {
+        type: Number,
+        default: null,
+      },
+      lng: {
+        type: Number,
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("User", userSchema);

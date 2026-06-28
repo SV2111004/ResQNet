@@ -14,12 +14,18 @@ import { recommendShelter } from "../services/shelterService";
 
 import { assignShelter } from "../services/emergencyService";
 
+import EmergencyMap from "../components/EmergencyMap";
+
+import { optimizeRoute } from "../services/routeService";
+
 import socket from "../socket";
 
 function ResponderDashboard() {
   const [missions, setMissions] = useState([]);
 
   const [recommendedShelters, setRecommendedShelters] = useState({});
+
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -89,7 +95,18 @@ function ResponderDashboard() {
       socket.off("newMission");
     };
   }, []);
-
+  const emergencyLocations = missions
+    .filter(
+      (mission) =>
+        mission.emergency?.location?.lat && mission.emergency?.location?.lng,
+    )
+    .map((mission) => ({
+      _id: mission.emergency._id,
+      emergencyType: mission.emergency.emergencyType,
+      priorityScore: mission.emergency.priorityScore,
+      status: mission.status,
+      location: mission.emergency.location,
+    }));
   return (
     <DashboardLayout>
       <h1
@@ -100,10 +117,17 @@ function ResponderDashboard() {
       >
         Responder Dashboard
       </h1>
-
+      <div
+        className="
+    bg-slate-900
+    rounded-lg
+    overflow-hidden
+    mb-8"
+      >
+        <EmergencyMap emergencies={emergencyLocations} routeCoordinates={[]} />
+      </div>
       <h2
         className="
-        text-xl
         font-semibold
         mb-4"
       >

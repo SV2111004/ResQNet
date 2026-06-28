@@ -9,7 +9,7 @@ import StatCard from "../components/StatCard";
 
 import EmergencyMap from "../components/EmergencyMap";
 
-import { getResponders } from "../services/userService";
+//import { getResponders } from "../services/userService";
 import { createMission } from "../services/missionService";
 import {
   getEmergencies,
@@ -36,12 +36,12 @@ function AdminDashboard() {
 
         setEmergencies(data);
 
-        const responderData = await getResponders(user.token);
+        //const responderData = await getResponders(user.token);
         const statsData = await getEmergencyStats(user.token);
 
         setStats(statsData);
 
-        setResponders(responderData);
+        // setResponders(responderData);
       } catch (error) {
         console.log(error);
       }
@@ -50,20 +50,18 @@ function AdminDashboard() {
     fetchData();
   }, [user]);
 
-  const [responders, setResponders] = useState([]);
+  //const [responders, setResponders] = useState([]);
 
   const assignMission = async (emergencyId) => {
     try {
-      if (responders.length === 0) {
-        return;
-      }
+      // if (responders.length === 0) {
+      //   return;
+      // }
 
       await createMission(
         {
           emergencyId,
-          responderId: responders[0]._id,
         },
-
         user.token,
       );
       const updatedEmergencies = await getEmergencies(user.token);
