@@ -252,27 +252,51 @@ function AdminDashboard() {
               {emergency.affectedPeople}
             </p>
             {emergency.assignedResponder ? (
-              <div
-                className="
-    mt-3
-    text-green-400"
-              >
-                Assigned
+              <div className="mt-4 p-4 bg-slate-800 rounded">
+                <h3 className="font-bold text-green-400">
+                  👨‍🚒 Responder Assigned
+                </h3>
+
+                <p className="mt-2">
+                  <span className="font-semibold">Name :</span>{" "}
+                  {emergency.assignedResponder.name}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Mission :</span>
+
+                  <span
+                    className={
+                      emergency.status === "completed"
+                        ? "text-green-400 ml-2"
+                        : emergency.status === "in_progress"
+                          ? "text-yellow-400 ml-2"
+                          : "text-orange-400 ml-2"
+                    }
+                  >
+                    {emergency.status === "completed"
+                      ? "Completed"
+                      : emergency.status === "in_progress"
+                        ? "In Progress"
+                        : "Assigned"}
+                  </span>
+                </p>
               </div>
             ) : (
               <button
                 onClick={() => assignMission(emergency._id)}
                 className="
-    mt-3
-    bg-green-600
-    px-4
-    py-2
-    rounded"
+      mt-3
+      bg-green-600
+      px-4
+      py-2
+      rounded"
               >
-                Assign Responder
+                Assign Nearest Responder
               </button>
             )}
-            {shelterRequiredEmergencies.includes(emergency.emergencyType) &&
+            {emergency.status !== "completed" &&
+              shelterRequiredEmergencies.includes(emergency.emergencyType) &&
               (emergency.assignedShelter ? (
                 <div className="mt-3 ml-3 text-green-400 font-semibold">
                   ✅ Shelter Assigned
