@@ -9,6 +9,7 @@ import CitizenDashboard from "./pages/CitizenDashboard";
 import ResponderDashboard from "./pages/ResponderDashboard";
 import PrivateRoute from "./routes/PrivateRoute";
 import RoleProtectedRoute from "./routes/RoleProtectedRoute";
+import Shelters from "./pages/Shelters";
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
           element={
             <RoleProtectedRoute allowedRole="responder">
               <ResponderDashboard />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/shelters"
+          element={
+            <RoleProtectedRoute allowedRole="admin">
+              <Shelters />
             </RoleProtectedRoute>
           }
         />

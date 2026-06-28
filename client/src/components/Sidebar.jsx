@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "../redux/features/authSlice";
 
 function Sidebar() {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -15,46 +14,25 @@ function Sidebar() {
 
   return (
     <div className="w-64 bg-slate-900 p-4">
-
-      <h1 className="text-2xl font-bold mb-8">
-        ResQNet
-      </h1>
+      <h1 className="text-2xl font-bold mb-8">ResQNet</h1>
 
       <div className="flex flex-col gap-4">
+        <Link to="/admin">Dashboard</Link>
 
-        <Link to="/admin">
-          Dashboard
-        </Link>
+        <Link to="#">Emergencies</Link>
 
-        <Link to="#">
-          Emergencies
-        </Link>
+        <Link to="#">Responders</Link>
 
-        <Link to="#">
-          Responders
-        </Link>
+        <Link to="/shelters">Shelters</Link>
 
-        <Link to="#">
-          Shelters
-        </Link>
+        <Link to="#">Flood Monitor</Link>
 
-        <Link to="#">
-          Flood Monitor
-        </Link>
+        <Link to="#">Analytics</Link>
 
-        <Link to="#">
-          Analytics
-        </Link>
-
-        <button
-          onClick={handleLogout}
-          className="mt-8 bg-red-600 p-2 rounded"
-        >
+        <button onClick={handleLogout} className="mt-8 bg-red-600 p-2 rounded">
           Logout
         </button>
-
       </div>
-
     </div>
   );
 }

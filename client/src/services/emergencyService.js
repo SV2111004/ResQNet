@@ -58,3 +58,26 @@ async (token) => {
 
   return response.data;
 };
+
+export const assignShelter = async (
+  emergencyId,
+  shelterId,
+  token
+) => {
+
+  const response =
+    await API.put(
+      `/emergencies/${emergencyId}/assign-shelter`,
+      {
+        shelterId,
+      },
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+  return response.data;
+};

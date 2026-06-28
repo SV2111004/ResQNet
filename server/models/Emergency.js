@@ -61,6 +61,11 @@ const emergencySchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+    assignedShelter: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shelter",
+      default: null,
+    },
   },
   {
     timestamps: true,

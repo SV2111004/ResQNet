@@ -18,3 +18,25 @@ export const recommendShelter = async (
 
   return response.data;
 };
+
+export const getShelters = async () => {
+  const response = await API.get(
+    "/shelters"
+  );
+
+  return response.data;
+};
+
+export const updateOccupancy = async (
+  shelterId,
+  people
+) => {
+  const response = await API.put(
+    `/shelters/${shelterId}/occupancy`,
+    {
+      people,
+    }
+  );
+
+  return response.data;
+};

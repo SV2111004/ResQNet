@@ -6,6 +6,7 @@ const {
   createEmergency,
   getEmergencies,
   getEmergencyStats,
+  assignShelter,
 } = require(
   "../controllers/emergencyController"
 );
@@ -35,4 +36,12 @@ router.get(
   authorize("admin"),
   getEmergencyStats
 );
+
+router.put(
+  "/:id/assign-shelter",
+  protect,
+  authorize("admin"),
+  assignShelter
+);
+
 module.exports = router;

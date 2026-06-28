@@ -14,6 +14,7 @@ import { createMission } from "../services/missionService";
 import {
   getEmergencies,
   getEmergencyStats,
+  assignShelter,
 } from "../services/emergencyService";
 
 import socket from "../socket";
@@ -145,6 +146,27 @@ function AdminDashboard() {
     }
   };
 
+  const handleAssignShelter = async (emergencyId) => {
+    try {
+      const shelter = recommendedShelters[emergencyId];
+
+      if (!shelter) {
+        alert("Please find a shelter first.");
+        return;
+      }
+
+      await assignShelter(emergencyId, shelter._id, user.token);
+
+      alert("Shelter assigned successfully");
+
+      const updatedEmergencies = await getEmergencies(user.token);
+
+      setEmergencies(updatedEmergencies);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [selectedEmergency, setSelectedEmergency] = useState(null);
 
   const [selectedShelter, setSelectedShelter] = useState(null);
@@ -252,20 +274,27 @@ function AdminDashboard() {
                 Assign Responder
               </button>
             )}
-            {shelterRequiredEmergencies.includes(emergency.emergencyType) && (
-              <button
-                onClick={() => handleShelterRecommendation(emergency)}
-                className="
-      mt-3
-      ml-3
-      bg-blue-600
-      px-4
-      py-2
-      rounded"
-              >
-                Find Shelter
-              </button>
-            )}
+            {shelterRequiredEmergencies.includes(emergency.emergencyType) &&
+              (emergency.assignedShelter ? (
+                <div className="mt-3 ml-3 text-green-400 font-semibold">
+                  ✅ Shelter Assigned
+                  <br />
+                  {emergency.assignedShelter.name}
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleShelterRecommendation(emergency)}
+                  className="
+        mt-3
+        ml-3
+        bg-blue-600
+        px-4
+        py-2
+        rounded"
+                >
+                  Find Shelter
+                </button>
+              ))}
             {recommendedShelters[emergency._id] && (
               <div className="mt-4 p-4 bg-slate-800 rounded">
                 <h3 className="font-bold text-blue-400">Recommended Shelter</h3>
@@ -294,6 +323,18 @@ function AdminDashboard() {
                     ? "Yes"
                     : "No"}
                 </p>
+                <button
+                  onClick={() => handleAssignShelter(emergency._id)}
+                  className="
+    mt-4
+    bg-green-600
+    px-4
+    py-2
+    rounded
+  "
+                >
+                  Assign Shelter
+                </button>
               </div>
             )}
           </div>

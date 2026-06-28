@@ -35,7 +35,10 @@ const getMyMissions = async (req, res) => {
   try {
     const missions = await Mission.find({
       responder: req.user._id,
-    }).populate("emergency", "emergencyType description priorityScore status");
+    }).populate(
+      "emergency",
+      "emergencyType description priorityScore status severity affectedPeople emergencyType location assignedShelter",
+    );
 
     res.json(missions);
   } catch (error) {
