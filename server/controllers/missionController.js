@@ -62,7 +62,6 @@ const createMission = async (req, res) => {
         email: nearestResponder.email,
       },
     });
-    
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -74,10 +73,16 @@ const getMyMissions = async (req, res) => {
   try {
     const missions = await Mission.find({
       responder: req.user._id,
-    }).populate(
-      "emergency",
-      "emergencyType description priorityScore status severity affectedPeople emergencyType location assignedShelter",
-    );
+    })
+      .populate({
+        path: "emergency",
+        select:
+          "emergencyType description priorityScore status severity affectedPeople location city assignedShelter locationNode",
+        populate: {
+          path: "assignedShelter",
+        },
+      })
+      .populate("responder", "locationNode name");
 
     res.json(missions);
   } catch (error) {
@@ -147,9 +152,60 @@ const completeMission = async (req, res) => {
   }
 };
 
+const startNavigation = async (req, res) => {
+  try {
+    const mission = await Mission.findById(req.params.id);
+
+    if (!mission) {
+      return res.status(404).json({
+        message: "Mission not found",
+      });
+    }
+
+    const { distance, eta, path } = req.body;
+
+    mission.navigationStarted = true;
+    mission.routeDistance = distance;
+    mission.routeETA = eta;
+    mission.routePath = path;
+
+    await mission.save();
+
+    res.json(mission);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const reachSite = async (req, res) => {
+  try {
+    const mission = await Mission.findById(req.params.id);
+
+    if (!mission) {
+      return res.status(404).json({
+        message: "Mission not found",
+      });
+    }
+
+    mission.reachedSite = true;
+
+    await mission.save();
+
+    res.json(mission);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createMission,
   getMyMissions,
   acceptMission,
   completeMission,
+  startNavigation,
+  reachSite,
 };

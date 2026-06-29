@@ -17,7 +17,29 @@ const missionSchema = new mongoose.Schema(
       enum: ["assigned", "accepted", "completed"],
       default: "assigned",
     },
-   
+    navigationStarted: {
+      type: Boolean,
+      default: false,
+    },
+
+    reachedSite: {
+      type: Boolean,
+      default: false,
+    },
+    routeDistance: {
+  type: Number,
+  default: 0,
+},
+
+routeETA: {
+  type: Number,
+  default: 0,
+},
+
+routePath: {
+  type: [String],
+  default: [],
+},
   },
   {
     timestamps: true,

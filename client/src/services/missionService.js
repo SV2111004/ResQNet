@@ -72,3 +72,33 @@ async (
 
   return response.data;
 };
+export const startNavigation = async (
+  missionId,
+  navigationData,
+  token
+) => {
+  const response = await API.put(
+    `/missions/${missionId}/start-navigation`,
+    navigationData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+export const reachSite = async (missionId, token) => {
+  const response = await API.put(
+    `/missions/${missionId}/reach-site`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

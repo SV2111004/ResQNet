@@ -1,77 +1,46 @@
-const buildGraph =
-  require("../utils/graphBuilder");
+const buildGraph = require("../utils/graphBuilder");
 
-const dijkstra =
-  require("../utils/dijkstra");
+const dijkstra = require("../utils/dijkstra");
 
-const demoLocations =
-  require("../data/demoLocations");
+const demoLocations = require("../data/demoLocations");
 
-const optimizeRoute =
-  async (req, res) => {
+const optimizeRoute = async (req, res) => {
+  try {
+    const { start, end } = req.body;
 
-    try {
+    const graph = buildGraph();
 
-      const {
-        start,
-        end,
-      } = req.body;
+    const result = dijkstra(graph, start, end);
 
-      const graph =
-        buildGraph();
+    const readablePath = result.path.map((nodeId) => {
+      const location = demoLocations.find((loc) => loc.id === nodeId);
 
-      const result =
-        dijkstra(
-          graph,
-          start,
-          end
-        );
+      return location ? location.name : nodeId;
+    });
 
-      const readablePath =
-        result.path.map(
-          (nodeId) => {
+    const routeCoordinates = result.path.map((nodeId) => {
+      const location = demoLocations.find((loc) => loc.id === nodeId);
 
-            const location =
-              demoLocations.find(
-                (loc) =>
-                  loc.id ===
-                  nodeId
-              );
+      return [location.lat, location.lng];
+    });
 
-            return location
-              ? location.name
-              : nodeId;
+    const eta = Math.ceil((result.distance / 40) * 60);
 
-          }
-        );
+    res.json({
+      path: readablePath,
 
-      const eta =
-        Math.ceil(
-          (result.distance /
-            40) *
-            60
-        );
+      distance: result.distance,
 
-      res.json({
-        path:
-          readablePath,
+      eta,
 
-        distance:
-          result.distance,
-
-        eta,
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        message:
-          error.message,
-      });
-
-    }
-
-  };
+      routeCoordinates,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   optimizeRoute,

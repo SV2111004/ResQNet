@@ -33,6 +33,11 @@ const emergencySchema = new mongoose.Schema(
       lng: Number,
     },
 
+    locationNode: {
+      type: String,
+      default: null,
+    },
+
     city: {
       type: String,
       default: "Unknown",

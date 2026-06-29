@@ -10,6 +10,8 @@ import ResponderDashboard from "./pages/ResponderDashboard";
 import PrivateRoute from "./routes/PrivateRoute";
 import RoleProtectedRoute from "./routes/RoleProtectedRoute";
 import Shelters from "./pages/Shelters";
+import Emergencies from "./pages/Emergencies";
+import Responders from "./pages/Responders";
 
 function App() {
   return (
@@ -52,6 +54,23 @@ function App() {
           element={
             <RoleProtectedRoute allowedRole="admin">
               <Shelters />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/emergencies"
+          element={
+            <RoleProtectedRoute allowedRole="admin">
+              <Emergencies />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/responders"
+          element={
+            <RoleProtectedRoute allowedRole="admin">
+              <Responders />
             </RoleProtectedRoute>
           }
         />

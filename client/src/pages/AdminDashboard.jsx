@@ -14,7 +14,6 @@ import { createMission } from "../services/missionService";
 import {
   getEmergencies,
   getEmergencyStats,
-  assignShelter,
 } from "../services/emergencyService";
 
 import socket from "../socket";
@@ -123,47 +122,7 @@ function AdminDashboard() {
     }
   };
   const [recommendedShelters, setRecommendedShelters] = useState({});
-  const handleShelterRecommendation = async (emergency) => {
-    try {
-      console.log("Emergency:", emergency);
-      const shelter = await recommendShelter(
-        emergency.location.lat,
-        emergency.location.lng,
-      );
-      console.log("Shelter:", shelter);
 
-      setRecommendedShelters((prev) => ({
-        ...prev,
-        [emergency._id]: shelter,
-      }));
-      setSelectedEmergency(emergency);
-
-      setSelectedShelter(shelter);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleAssignShelter = async (emergencyId) => {
-    try {
-      const shelter = recommendedShelters[emergencyId];
-
-      if (!shelter) {
-        alert("Please find a shelter first.");
-        return;
-      }
-
-      await assignShelter(emergencyId, shelter._id, user.token);
-
-      alert("Shelter assigned successfully");
-
-      const updatedEmergencies = await getEmergencies(user.token);
-
-      setEmergencies(updatedEmergencies);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const [selectedEmergency, setSelectedEmergency] = useState(null);
 
@@ -205,8 +164,8 @@ function AdminDashboard() {
         <EmergencyMap
           emergencies={emergencies}
           routeCoordinates={routeCoordinates}
-          selectedEmergency={selectedEmergency}
-          selectedShelter={selectedShelter}
+          // selectedEmergency={selectedEmergency}
+          // selectedShelter={selectedShelter}
         />
       </div>
       <div className="mt-8">
@@ -295,70 +254,78 @@ function AdminDashboard() {
                 Assign Nearest Responder
               </button>
             )}
-            {emergency.status !== "completed" &&
-              shelterRequiredEmergencies.includes(emergency.emergencyType) &&
-              (emergency.assignedShelter ? (
-                <div className="mt-3 ml-3 text-green-400 font-semibold">
-                  ✅ Shelter Assigned
-                  <br />
-                  {emergency.assignedShelter.name}
-                </div>
-              ) : (
-                <button
-                  onClick={() => handleShelterRecommendation(emergency)}
-                  className="
-        mt-3
-        ml-3
-        bg-blue-600
-        px-4
-        py-2
-        rounded"
-                >
-                  Find Shelter
-                </button>
-              ))}
-            {recommendedShelters[emergency._id] && (
-              <div className="mt-4 p-4 bg-slate-800 rounded">
-                <h3 className="font-bold text-blue-400">Recommended Shelter</h3>
+            {/* {emergency.status !== "completed" &&
+              shelterRequiredEmergencies.includes(emergency.emergencyType) && (
+                <>
+                  {emergency.assignedShelter ? (
+                    <div className="mt-3 ml-3 text-green-400 font-semibold">
+                      ✅ Shelter Assigned
+                      <br />
+                      {emergency.assignedShelter.name}
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleShelterRecommendation(emergency)}
+                        className="
+              mt-3
+              ml-3
+              bg-blue-600
+              px-4
+              py-2
+              rounded"
+                      >
+                        Find Shelter
+                      </button>
 
-                <p>Name: {recommendedShelters[emergency._id].name}</p>
+                      {recommendedShelters[emergency._id] && (
+                        <div className="mt-4 bg-slate-800 p-4 rounded">
+                          <h3 className="font-bold text-green-400">
+                            Recommended Shelter
+                          </h3>
 
-                <p>
-                  Distance: {recommendedShelters[emergency._id].distance} km
-                </p>
+                          <p>{recommendedShelters[emergency._id].name}</p>
 
-                <p>
-                  Available Beds:{" "}
-                  {recommendedShelters[emergency._id].availableBeds}
-                </p>
+                          <p>
+                            Distance:{" "}
+                            {recommendedShelters[emergency._id].distance} km
+                          </p>
 
-                <p>
-                  Food Available:{" "}
-                  {recommendedShelters[emergency._id].foodAvailable
-                    ? "Yes"
-                    : "No"}
-                </p>
+                          <p>
+                            Available Beds:{" "}
+                            {recommendedShelters[emergency._id].availableBeds}
+                          </p>
 
-                <p>
-                  Water Available:{" "}
-                  {recommendedShelters[emergency._id].waterAvailable
-                    ? "Yes"
-                    : "No"}
-                </p>
-                <button
-                  onClick={() => handleAssignShelter(emergency._id)}
-                  className="
+                          <p>
+                            Food:{" "}
+                            {recommendedShelters[emergency._id].foodAvailable
+                              ? "Yes"
+                              : "No"}
+                          </p>
+
+                          <p>
+                            Water:{" "}
+                            {recommendedShelters[emergency._id].waterAvailable
+                              ? "Yes"
+                              : "No"}
+                          </p>
+                          <button
+                            onClick={() => handleAssignShelter(emergency)}
+                            className="
     mt-4
     bg-green-600
     px-4
     py-2
-    rounded
-  "
-                >
-                  Assign Shelter
-                </button>
-              </div>
-            )}
+    rounded"
+                          >
+                            Assign Shelter
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )} */}
           </div>
         ))}
       </div>

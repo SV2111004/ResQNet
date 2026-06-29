@@ -19,15 +19,11 @@ function Sidebar() {
       <div className="flex flex-col gap-4">
         <Link to="/admin">Dashboard</Link>
 
-        <Link to="#">Emergencies</Link>
+        <Link to="/emergencies">Emergencies</Link>
 
-        <Link to="#">Responders</Link>
+        <Link to="/responders">Responders</Link>
 
         <Link to="/shelters">Shelters</Link>
-
-        <Link to="#">Flood Monitor</Link>
-
-        <Link to="#">Analytics</Link>
 
         <button onClick={handleLogout} className="mt-8 bg-red-600 p-2 rounded">
           Logout

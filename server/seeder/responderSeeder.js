@@ -28,9 +28,10 @@ const createResponders = async () => {
         isAvailable: true,
 
         location: {
-          lat: 28.6289,
-          lng: 77.3649,
+          lat: 28.5634,
+          lng: 77.3443,
         },
+        locationNode: "sector37",
       },
 
       {
@@ -42,9 +43,10 @@ const createResponders = async () => {
         isAvailable: true,
 
         location: {
-          lat: 28.5706,
-          lng: 77.3272,
+          lat: 28.5158,
+          lng: 77.4128,
         },
+        locationNode: "sector142",
       },
 
       {
@@ -56,9 +58,10 @@ const createResponders = async () => {
         isAvailable: true,
 
         location: {
-          lat: 28.4677,
-          lng: 77.5030,
+          lat: 28.4728,
+          lng: 77.4958,
         },
+        locationNode: "knowledgepark",
       },
     ]);
 

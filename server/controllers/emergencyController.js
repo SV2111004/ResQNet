@@ -1,5 +1,6 @@
 const Emergency = require("../models/Emergency");
 const Shelter = require("../models/Shelter");
+const getNearestLocation = require("../utils/nearestLocation");
 
 const createEmergency = async (req, res) => {
   try {
@@ -7,6 +8,7 @@ const createEmergency = async (req, res) => {
       req.body;
 
     const priorityScore = severity * 5 + affectedPeople * 3;
+    const nearestLocation = getNearestLocation(lat, lng);
 
     const emergency = await Emergency.create({
       citizen: req.user._id,
@@ -19,6 +21,7 @@ const createEmergency = async (req, res) => {
         lat,
         lng,
       },
+      locationNode: nearestLocation.id,
       severity,
       affectedPeople,
       priorityScore,

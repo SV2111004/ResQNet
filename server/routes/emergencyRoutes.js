@@ -40,7 +40,7 @@ router.get(
 router.put(
   "/:id/assign-shelter",
   protect,
-  authorize("admin"),
+  authorize("responder"),
   assignShelter
 );
 
