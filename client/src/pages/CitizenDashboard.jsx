@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
+
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
 import { createEmergency } from "../services/emergencyService";
+
+import { useSelector, useDispatch } from "react-redux";
 
 function CitizenDashboard() {
   const [emergencyType, setEmergencyType] = useState("flood");
@@ -18,7 +20,8 @@ function CitizenDashboard() {
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
 
-  const { user } = useSelector((state) => state.auth);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,7 +29,7 @@ function CitizenDashboard() {
       await createEmergency(
         {
           emergencyType,
-          description,
+          description: description || "Emergency reported",
 
           lat,
           lng,
@@ -54,26 +57,41 @@ function CitizenDashboard() {
       },
     );
   }, []);
+
+
+
   return (
     <DashboardLayout>
-      <h1
-        className="
-      text-3xl
-      font-bold
-      mb-6"
-      >
-        Citizen Dashboard
-      </h1>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold">🚨 Emergency SOS</h1>
 
-      <div
-        className="
-      bg-slate-900
-      p-6
-      rounded-lg"
-      >
-        <p className="mb-4 text-green-400">
-          {lat ? "Location captured" : "Fetching location..."}
+        <p className="text-slate-400 mt-2">
+          Stay calm. Report your emergency and our responders will be notified
+          immediately.
         </p>
+      </div>
+
+      <div className="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
+        <div
+          className={`mb-6 p-4 rounded-xl border ${
+            lat
+              ? "bg-green-900/30 border-green-700"
+              : "bg-yellow-900/30 border-yellow-700"
+          }`}
+        >
+          <p className={lat ? "text-green-400" : "text-yellow-400"}>
+            {lat
+              ? "📍 Location captured successfully"
+              : "📡 Fetching your location..."}
+          </p>
+
+          {lat && (
+            <p className="text-xs text-slate-400 mt-2">
+              Your live location will be shared only for this emergency.
+            </p>
+          )}
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-2">
             <label>Emergency Type</label>
@@ -100,12 +118,11 @@ function CitizenDashboard() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label>Description</label>
+            <label>Description (Optional)</label>
 
             <textarea
-              required
               rows="3"
-              placeholder="Describe the emergency situation"
+              placeholder="Describe anything that can help responders..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="
@@ -117,54 +134,55 @@ function CitizenDashboard() {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label>Severity (1-5)</label>
+          <div className="grid md:grid-cols-2 gap-5">
+            <div className="flex flex-col gap-2">
+              <label>Severity</label>
 
-            <select
-              value={severity}
-              onChange={(e) => setSeverity(Number(e.target.value))}
-              className="
-      bg-slate-800
-      p-3
-      rounded
-      border
-      border-slate-700"
-            >
-              <option value={1}>1 - Low</option>
-              <option value={2}>2 - Moderate</option>
-              <option value={3}>3 - High</option>
-              <option value={4}>4 - Critical</option>
-              <option value={5}>5 - Extreme</option>
-            </select>
+              <select
+                value={severity}
+                onChange={(e) => setSeverity(Number(e.target.value))}
+                className="bg-slate-800 p-3 rounded border border-slate-700"
+              >
+                <option value={1}>1 • Low</option>
+                <option value={2}>2 • Moderate</option>
+                <option value={3}>3 • High</option>
+                <option value={4}>4 • Critical</option>
+                <option value={5}>5 • Extreme</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label>People Affected</label>
+
+              <input
+                type="number"
+                min="1"
+                value={affectedPeople}
+                onChange={(e) => setAffectedPeople(Number(e.target.value))}
+                className="bg-slate-800 p-3 rounded border border-slate-700"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label>Estimated People Affected</label>
-
-            <input
-              type="number"
-              min="1"
-              value={affectedPeople}
-              onChange={(e) => setAffectedPeople(Number(e.target.value))}
-              className="
-      bg-slate-800
-      p-3
-      rounded
-      border
-      border-slate-700"
-            />
-          </div>
           <button
             type="submit"
             className="
-    bg-red-600
-    hover:bg-red-700
-    px-6
-    py-3
-    rounded
-    font-semibold"
+  w-full
+  mt-4
+  py-4
+  rounded-xl
+  bg-gradient-to-r
+  from-red-600
+  to-red-700
+  hover:from-red-700
+  hover:to-red-800
+  font-bold
+  text-lg
+  transition-all
+  duration-200
+  shadow-lg"
           >
-            Create SOS
+            🚨 SEND EMERGENCY SOS
           </button>
           <button type="submit"></button>
         </form>
