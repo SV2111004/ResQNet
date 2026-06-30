@@ -43,6 +43,7 @@ const getEmergencies = async (req, res) => {
   try {
     const emergencies = await Emergency.find()
       .populate("assignedResponder", "name isAvailable")
+      .populate("assignedShelter")
       .sort({
         priorityScore: -1,
       });
