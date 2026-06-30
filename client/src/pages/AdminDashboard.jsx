@@ -18,11 +18,6 @@ import {
 
 import socket from "../socket";
 
-import demoLocations from "../data/demoLocations";
-import { optimizeRoute } from "../services/routeService";
-
-import { recommendShelter } from "../services/shelterService";
-
 function AdminDashboard() {
   const [emergencies, setEmergencies] = useState([]);
 
@@ -96,39 +91,38 @@ function AdminDashboard() {
     };
   }, []);
 
-  const [startNode, setStartNode] = useState("sector18");
+  // const [startNode, setStartNode] = useState("sector18");
 
-  const [endNode, setEndNode] = useState("parichowk");
+  // const [endNode, setEndNode] = useState("parichowk");
 
-  const [routeResult, setRouteResult] = useState(null);
+  // const [routeResult, setRouteResult] = useState(null);
 
   const [routeCoordinates, setRouteCoordinates] = useState([]);
 
-  const handleRouteOptimization = async () => {
-    try {
-      const result = await optimizeRoute(startNode, endNode);
+  // const handleRouteOptimization = async () => {
+  //   try {
+  //     const result = await optimizeRoute(startNode, endNode);
 
-      setRouteResult(result);
+  //     setRouteResult(result);
 
-      const coordinates = result.path.map((locationName) => {
-        const location = demoLocations.find((loc) => loc.name === locationName);
+  //     const coordinates = result.path.map((locationName) => {
+  //       const location = demoLocations.find((loc) => loc.name === locationName);
 
-        return [location.lat, location.lng];
-      });
+  //       return [location.lat, location.lng];
+  //     });
 
-      setRouteCoordinates(coordinates);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const [recommendedShelters, setRecommendedShelters] = useState({});
+  //     setRouteCoordinates(coordinates);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // const [recommendedShelters, setRecommendedShelters] = useState({});
 
+  // const [selectedEmergency, setSelectedEmergency] = useState(null);
 
-  const [selectedEmergency, setSelectedEmergency] = useState(null);
+  // const [selectedShelter, setSelectedShelter] = useState(null);
 
-  const [selectedShelter, setSelectedShelter] = useState(null);
-
-  const [shelterRoute, setShelterRoute] = useState([]);
+  // const [shelterRoute, setShelterRoute] = useState([]);
 
   const shelterRequiredEmergencies = [
     "flood",
@@ -330,65 +324,48 @@ function AdminDashboard() {
         ))}
       </div>
       <div className="bg-slate-900 p-6 rounded-lg mt-8">
-        <h2 className="text-xl font-bold mb-4">Route Optimization</h2>
+        <h2 className="text-xl font-bold mb-5">📋 Recent Activity</h2>
 
-        <div className="flex gap-4">
-          <select
-            value={startNode}
-            onChange={(e) => setStartNode(e.target.value)}
-          >
-            {demoLocations.map((location) => (
-              <option key={location.id} value={location.id}>
-                {location.name}
-              </option>
-            ))}
-          </select>
+        <div className="space-y-4">
+          {emergencies.slice(0, 5).map((emergency) => (
+            <div
+              key={emergency._id}
+              className="flex justify-between items-start border-b border-slate-700 pb-4"
+            >
+              <div>
+                <p className="font-semibold">
+                  {emergency.status === "pending" &&
+                    "🚨 New emergency reported"}
 
-          <select value={endNode} onChange={(e) => setEndNode(e.target.value)}>
-            {demoLocations.map((location) => (
-              <option key={location.id} value={location.id}>
-                {location.name}
-              </option>
-            ))}
-          </select>
+                  {emergency.status === "assigned" && "👨‍🚒 Responder assigned"}
 
-          <button
-            onClick={handleRouteOptimization}
-            className="
-      bg-blue-600
-      px-4
-      py-2
-      rounded"
-          >
-            Calculate Route
-          </button>
-        </div>
+                  {emergency.status === "in_progress" &&
+                    "🧭 Rescue mission in progress"}
 
-        {routeResult && (
-          <div className="mt-6">
-            <p>
-              Distance: {routeResult.distance}
-              km
-            </p>
+                  {emergency.status === "completed" && "✅ Mission completed"}
+                </p>
 
-            <p>
-              ETA: {routeResult.eta}
-              min
-            </p>
+                <p className="text-slate-400 text-sm mt-1">
+                  <span className="capitalize">{emergency.emergencyType}</span>
 
-            <div className="mt-4">
-              <h3 className="font-bold">Optimal Route</h3>
+                  {" • "}
 
-              {routeResult.path.map((location, index) => (
-                <div key={index}>
-                  <p>{location}</p>
+                  {emergency.locationNode}
+                </p>
 
-                  {index < routeResult.path.length - 1 && <p>↓</p>}
-                </div>
-              ))}
+                {emergency.assignedResponder && (
+                  <p className="text-sm text-blue-400 mt-1">
+                    {emergency.assignedResponder.name}
+                  </p>
+                )}
+              </div>
+
+              <span className="text-xs text-slate-500">
+                {new Date(emergency.updatedAt).toLocaleString()}
+              </span>
             </div>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );
