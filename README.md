@@ -1,8 +1,6 @@
 # ResQNet
 
-**A real-time disaster response and emergency coordination platform** connecting citizens, field responders, and command-center admins the moment an emergency happens.
-
-ResQNet is a real-time disaster response and emergency coordination platform that connects citizens, responders, and command-center administrators. Citizens can report emergencies with a single tap using their live GPS location. Each incident is instantly broadcast via Socket.io, automatically prioritized using a priority score, and assigned to the nearest available responder.
+**ResQNet is a real-time disaster response and emergency coordination platform** that connects citizens, responders, and command-center administrators. Citizens can report emergencies with a single tap using their live GPS location. Each incident is instantly broadcast via Socket.io, automatically prioritized using a priority score, and assigned to the nearest available responder.
 Administrators oversee the entire operation through a live command-center dashboard featuring interactive maps, real-time analytics, and emergency tracking, ensuring complete situational awareness.
  Responders navigate using a custom Dijkstra shortest path implementation, while evacuation scenarios receive intelligent shelter recommendations based on distance and available capacity.
 
