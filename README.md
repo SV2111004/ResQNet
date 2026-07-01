@@ -8,6 +8,11 @@ Administrators oversee the entire operation through a live command-center dashbo
 
 ---
 
+## Live Demo
+
+https://res-q-net-chi.vercel.app
+
+---
 ## Table of contents
 
 - [Features by role](#features-by-role)
