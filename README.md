@@ -19,8 +19,7 @@ Administrators oversee the entire operation through a live command-center dashbo
 - [Seeding demo data](#seeding-demo-data)
 - [API reference](#api-reference)
 - [Project structure](#project-structure)
-- [Known limitations](#known-limitations)
-- [License](#license)
+
 
 ---
 
