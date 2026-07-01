@@ -22,6 +22,24 @@ export const getEmergencies = async (
   return response.data;
 };
 
+export const getMyEmergencies = async (
+  token
+) => {
+
+  const response =
+    await API.get(
+      "/emergencies/mine",
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+  return response.data;
+};
+
 export const createEmergency = async (
   emergencyData,
   token

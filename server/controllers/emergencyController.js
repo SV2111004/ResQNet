@@ -55,6 +55,22 @@ const getEmergencies = async (req, res) => {
     });
   }
 };
+const getMyEmergencies = async (req, res) => {
+  try {
+    const emergencies = await Emergency.find({ citizen: req.user._id })
+      .populate("assignedResponder", "name isAvailable")
+      .populate("assignedShelter")
+      .sort({
+        createdAt: -1,
+      });
+
+    res.json(emergencies);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 const getEmergencyStats = async (req, res) => {
   try {
     const active = await Emergency.countDocuments({
@@ -140,6 +156,7 @@ const assignShelter = async (req, res) => {
 module.exports = {
   createEmergency,
   getEmergencies,
+  getMyEmergencies,
   getEmergencyStats,
   assignShelter,
 };

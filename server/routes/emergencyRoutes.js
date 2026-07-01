@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createEmergency,
   getEmergencies,
+  getMyEmergencies,
   getEmergencyStats,
   assignShelter,
 } = require(
@@ -28,6 +29,12 @@ router.get(
   protect,
   authorize("admin"),
   getEmergencies
+);
+
+router.get(
+  "/mine",
+  protect,
+  getMyEmergencies
 );
 
 router.get(

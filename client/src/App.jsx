@@ -7,11 +7,15 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import CitizenDashboard from "./pages/CitizenDashboard";
 import ResponderDashboard from "./pages/ResponderDashboard";
-import PrivateRoute from "./routes/PrivateRoute";
 import RoleProtectedRoute from "./routes/RoleProtectedRoute";
 import Shelters from "./pages/Shelters";
 import Emergencies from "./pages/Emergencies";
 import Responders from "./pages/Responders";
+
+import ReportEmergency from "./pages/citizen/ReportEmergency";
+import MyReports from "./pages/citizen/MyReports";
+import SafetyResources from "./pages/citizen/SafetyResources";
+import Feedback from "./pages/citizen/Feedback";
 
 function App() {
   return (
@@ -37,6 +41,42 @@ function App() {
           element={
             <RoleProtectedRoute allowedRole="citizen">
               <CitizenDashboard />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/citizen/report"
+          element={
+            <RoleProtectedRoute allowedRole="citizen">
+              <ReportEmergency />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/citizen/my-reports"
+          element={
+            <RoleProtectedRoute allowedRole="citizen">
+              <MyReports />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/citizen/safety"
+          element={
+            <RoleProtectedRoute allowedRole="citizen">
+              <SafetyResources />
+            </RoleProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/citizen/feedback"
+          element={
+            <RoleProtectedRoute allowedRole="citizen">
+              <Feedback />
             </RoleProtectedRoute>
           }
         />

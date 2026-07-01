@@ -1,191 +1,147 @@
-import { useEffect, useState } from "react";
-
-
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import {
+  FiFileText,
+  FiShield,
+  FiMessageSquare,
+  FiArrowRight,
+  FiPhoneCall,
+} from "react-icons/fi";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 
-import { createEmergency } from "../services/emergencyService";
+const QUICK_ACTIONS = [
+  {
+    to: "/citizen/my-reports",
+    title: "My Reports",
+    desc: "Track the status of emergencies you've reported.",
+    icon: FiFileText,
+    accent: "text-[var(--accent-info)]",
+    bg: "bg-[var(--accent-info-dim)]",
+    border: "hover:border-[var(--accent-info)]/40",
+  },
+  {
+    to: "/citizen/safety",
+    title: "Safety Resources",
+    desc: "Preparedness guides for floods, fires, quakes & more.",
+    icon: FiShield,
+    accent: "text-[var(--accent-safe)]",
+    bg: "bg-[var(--accent-safe-dim)]",
+    border: "hover:border-[var(--accent-safe)]/40",
+  },
+  {
+    to: "/citizen/feedback",
+    title: "Feedback",
+    desc: "Tell us how ResQNet performed during your incident.",
+    icon: FiMessageSquare,
+    accent: "text-[var(--accent-warning)]",
+    bg: "bg-[var(--accent-warning-dim)]",
+    border: "hover:border-[var(--accent-warning)]/40",
+  },
+];
 
-import { useSelector, useDispatch } from "react-redux";
+const SAFETY_TIP = {
+  title: "Before help arrives",
+  body: "If it's safe to do so, move to higher ground during floods, drop-cover-hold during earthquakes, and keep your phone charged so responders can reach you.",
+};
 
 function CitizenDashboard() {
-  const [emergencyType, setEmergencyType] = useState("flood");
+  const { user } = useSelector((state) => state.auth);
+  const firstName = user?.user?.name?.split(" ")[0] || "there";
 
-  const [description, setDescription] = useState("");
-
-  const [severity, setSeverity] = useState(1);
-
-  const [affectedPeople, setAffectedPeople] = useState(1);
-
-  const [lat, setLat] = useState(null);
-  const [lng, setLng] = useState(null);
-
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await createEmergency(
-        {
-          emergencyType,
-          description: description || "Emergency reported",
-
-          lat,
-          lng,
-
-          severity,
-          affectedPeople,
-        },
-
-        user.token,
-      );
-
-      alert("SOS Created");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLat(position.coords.latitude);
-        setLng(position.coords.longitude);
-      },
-      (error) => {
-        console.log(error);
-      },
-    );
-  }, []);
-
-
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold">🚨 Emergency SOS</h1>
+      {/* Welcome / SOS banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-6 sm:p-8 mb-6 animate-fade-in-up">
+        <div className="absolute inset-0 radar-grid opacity-60 pointer-events-none" />
+        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <p className="text-[var(--text-muted)] text-sm mb-1">{greeting},</p>
+            <h1 className="text-2xl sm:text-3xl font-bold font-display">{firstName} 👋</h1>
+            <p className="text-[var(--text-secondary)] mt-2 max-w-md text-sm">
+              You're connected to ResQNet's live response network. If something
+              is wrong, don't wait — report it now.
+            </p>
+          </div>
 
-        <p className="text-slate-400 mt-2">
-          Stay calm. Report your emergency and our responders will be notified
-          immediately.
-        </p>
+          <Link
+            to="/citizen/report"
+            className="group inline-flex items-center justify-center gap-2 bg-[var(--accent-emergency)] hover:bg-[#e63e40] text-white font-bold px-6 py-4 rounded-xl text-lg shrink-0 shadow-[0_0_0_1px_rgba(255,77,79,0.4),0_8px_30px_-8px_rgba(255,77,79,0.6)] transition-colors"
+          >
+            <span className="pulse-dot w-2 h-2 text-white" />
+            SEND SOS
+            <FiArrowRight className="group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
       </div>
 
-      <div className="bg-slate-900 rounded-2xl p-8 shadow-xl border border-slate-800">
-        <div
-          className={`mb-6 p-4 rounded-xl border ${
-            lat
-              ? "bg-green-900/30 border-green-700"
-              : "bg-yellow-900/30 border-yellow-700"
-          }`}
-        >
-          <p className={lat ? "text-green-400" : "text-yellow-400"}>
-            {lat
-              ? "📍 Location captured successfully"
-              : "📡 Fetching your location..."}
-          </p>
+      {/* Quick actions */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {QUICK_ACTIONS.map(({ to, title, desc, icon: Icon, accent, bg, border }) => (
+          <Link
+            key={to}
+            to={to}
+            className={`group bg-[var(--bg-surface)] border border-[var(--border-subtle)] ${border} rounded-2xl p-5 flex items-start gap-4 transition-colors`}
+          >
+            <span className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
+              <Icon className={accent} size={20} />
+            </span>
+            <div className="min-w-0">
+              <h3 className="font-semibold flex items-center gap-1.5">
+                {title}
+                <FiArrowRight
+                  size={14}
+                  className="opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[var(--text-muted)]"
+                />
+              </h3>
+              <p className="text-sm text-[var(--text-muted)] mt-1">{desc}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
 
-          {lat && (
-            <p className="text-xs text-slate-400 mt-2">
-              Your live location will be shared only for this emergency.
-            </p>
-          )}
+      {/* Safety tip + emergency contacts */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <FiShield className="text-[var(--accent-safe)]" size={18} />
+            <h3 className="font-semibold">{SAFETY_TIP.title}</h3>
+          </div>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            {SAFETY_TIP.body}
+          </p>
+          <Link
+            to="/citizen/safety"
+            className="inline-flex items-center gap-1.5 text-sm text-[var(--accent-info)] hover:underline mt-4 font-medium"
+          >
+            View all safety resources
+            <FiArrowRight size={14} />
+          </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <label>Emergency Type</label>
-
-            <select
-              value={emergencyType}
-              onChange={(e) => setEmergencyType(e.target.value)}
-              className="
-      bg-slate-800
-      p-3
-      rounded
-      border
-      border-slate-700"
-            >
-              <option value="flood">Flood</option>
-              <option value="earthquake">Earthquake</option>
-              <option value="landslide">Landslide</option>
-              <option value="cyclone">Cyclone</option>
-              <option value="wildfire">Wildfire</option>
-              <option value="medical">Medical</option>
-              <option value="accident">Accident</option>
-              <option value="fire">Fire</option>
-            </select>
+        <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <FiPhoneCall className="text-[var(--accent-warning)]" size={18} />
+            <h3 className="font-semibold">Emergency contacts</h3>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <label>Description (Optional)</label>
-
-            <textarea
-              rows="3"
-              placeholder="Describe anything that can help responders..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="
-      bg-slate-800
-      p-3
-      rounded
-      border
-      border-slate-700"
-            />
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="flex flex-col gap-2">
-              <label>Severity</label>
-
-              <select
-                value={severity}
-                onChange={(e) => setSeverity(Number(e.target.value))}
-                className="bg-slate-800 p-3 rounded border border-slate-700"
-              >
-                <option value={1}>1 • Low</option>
-                <option value={2}>2 • Moderate</option>
-                <option value={3}>3 • High</option>
-                <option value={4}>4 • Critical</option>
-                <option value={5}>5 • Extreme</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label>People Affected</label>
-
-              <input
-                type="number"
-                min="1"
-                value={affectedPeople}
-                onChange={(e) => setAffectedPeople(Number(e.target.value))}
-                className="bg-slate-800 p-3 rounded border border-slate-700"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="
-  w-full
-  mt-4
-  py-4
-  rounded-xl
-  bg-gradient-to-r
-  from-red-600
-  to-red-700
-  hover:from-red-700
-  hover:to-red-800
-  font-bold
-  text-lg
-  transition-all
-  duration-200
-  shadow-lg"
-          >
-            🚨 SEND EMERGENCY SOS
-          </button>
-          <button type="submit"></button>
-        </form>
+          <ul className="space-y-2 text-sm font-mono-data">
+            <li className="flex justify-between text-[var(--text-secondary)]">
+              <span>Police</span><span className="text-white">100</span>
+            </li>
+            <li className="flex justify-between text-[var(--text-secondary)]">
+              <span>Ambulance</span><span className="text-white">102</span>
+            </li>
+            <li className="flex justify-between text-[var(--text-secondary)]">
+              <span>Fire</span><span className="text-white">101</span>
+            </li>
+            <li className="flex justify-between text-[var(--text-secondary)]">
+              <span>Disaster Mgmt.</span><span className="text-white">108</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </DashboardLayout>
   );
